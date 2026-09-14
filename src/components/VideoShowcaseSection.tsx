@@ -18,7 +18,7 @@ interface VideoShowcaseSectionProps {
   onStartQuiz: () => void;
 }
 
-const VIDEO_SRC = '/Stylecue_video.mp4';
+const VIDEO_SRC = "/Stylecue_video.mp4";
 
 export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onStartQuiz }) => {
   const { themeConfig } = useTheme();
