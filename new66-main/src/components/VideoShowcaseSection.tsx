@@ -28,7 +28,7 @@ interface VideoShowcaseSectionProps {
   onStartQuiz: () => void;
 }
 
-const DEFAULT_VIDEO_SRC = '/Stylecue_video.mp4';
+const DEFAULT_VIDEO_SRC = "/Stylecue_video.mp4";
 const FALLBACK_POSTER = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80';
 
 export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onStartQuiz }) => {
@@ -258,72 +258,28 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
           )}
 
           {/* Native Video Element if uploaded or default source */}
-          {customVideoSrc ? (
-            <video
-              ref={videoRef}
-              src={customVideoSrc}
-              className="w-full h-full object-cover"
-              onLoadedMetadata={handleTimeUpdate}
-              onTimeUpdate={handleTimeUpdate}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onError={() => {
-                console.warn('Video failed to load from customVideoSrc, falling back to showcase poster.');
-                setCustomVideoSrc(null);
-              }}
-              autoPlay
-              loop
-              playsInline
-              muted={isMuted}
-            />
-          ) : (
-            /* High-fidelity interactive animated video showcase representation */
-            <div className="absolute inset-0 overflow-hidden">
-              <img
-                src={FALLBACK_POSTER}
-                alt="StyleCue Commercial Showcase"
-                className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.05] transition-all duration-700 scale-100 group-hover:scale-105"
-              />
+         <video
+  ref={videoRef }
+  src={customVideoSrc || DEFAULT_VIDEO_SRC}
+  className="w-full h-full object-cover"
+  onLoadedMetadata={handleTimeUpdate}
+  onTimeUpdate={handleTimeUpdate}
+  onPlay={() => setIsPlaying(true)}
+  onPause={() => setIsPlaying(false)}
+  onError={() => {
+    console.warn("StyleCue video failed to load.");
+  }}
+  autoPlay
+  loop
+  playsInline
+  muted={isMuted}
+/>
 
-              {/* Top Overlay Badge */}
-              <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <div className="px-3 py-1 rounded-full glass-panel border border-white/20 text-[11px] font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span>StyleCue Commercial Cinema</span>
-                </div>
-              </div>
+ 
 
-              {/* Center Call-to-action to load user's video file */}
-              <div className="absolute inset-0 flex items-center justify-center p-4 z-20 pointer-events-none">
-                <div className="p-6 rounded-3xl glass-panel-elevated border border-white/20 max-w-sm text-center space-y-3 shadow-2xl backdrop-blur-md pointer-events-auto bg-black/75">
-                  <div
-                    className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center shadow-lg"
-                    style={{ backgroundColor: `${themeConfig.primaryAccent}30`, color: themeConfig.primaryAccent }}
-                  >
-                    <Film className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white">Embed Commercial Video</h3>
-                    <div className="text-[11px] font-mono text-amber-300 mt-1 flex items-center justify-center gap-1">
-                      <Upload className="w-3 h-3" />
-                      <span>Target: E:\Stylecue_video.mp4</span>
-                    </div>
-                  </div>
-                  <p className="text-[11px] text-white/80 leading-relaxed">
-                    Browsers cannot open local drive paths like <code className="text-amber-200">E:\</code> directly. Click below to select it or drag & drop it here.
-                  </p>
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-2.5 px-4 rounded-xl font-bold font-mono text-xs uppercase tracking-wider text-slate-950 shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
-                    style={{ backgroundColor: themeConfig.primaryAccent }}
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span>Select E:\Stylecue_video.mp4</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+            
+     
+           
 
           {/* Bottom Controls Bar */}
           <div className="relative z-20 p-4 bg-gradient-to-t from-black/95 via-black/80 to-transparent border-t border-white/10 space-y-2 mt-auto">
