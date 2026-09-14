@@ -169,7 +169,7 @@ export const DEMO_OUTFITS_DATABASE: Record<string, StylistDemoLook[]> = {
           name: 'Charcoal Wool-Linen Overshirt',
           brand: 'Studio Nicholson',
           retailer: 'SSENSE',
-          image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80',
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDQkOcNh0MfuAw380zhG0cuntIg4W8_CYdS51m3PYTkw&s=10',
           galleryImages: [
             'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1467043237213-65f2da53396f?auto=format&fit=crop&w=800&q=80'
@@ -184,9 +184,9 @@ export const DEMO_OUTFITS_DATABASE: Record<string, StylistDemoLook[]> = {
           name: 'Fluid Wool Relaxed Slacks',
           brand: 'Totême',
           retailer: 'Net-a-Porter',
-          image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80',
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdk0aKdZMZyeUOGsb_bvSmn_bQ8fiv0YDP6EWxZ-YncQ&s=10',
           galleryImages: [
-            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80'
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdk0aKdZMZyeUOGsb_bvSmn_bQ8fiv0YDP6EWxZ-YncQ&s=10'
           ],
           fabricNote: 'Lightweight virgin wool-silk blend with elasticated internal waistband',
           category: 'bottom',
@@ -203,15 +203,15 @@ export const DEMO_OUTFITS_DATABASE: Record<string, StylistDemoLook[]> = {
       vibe: 'Casual & Clean',
       matchScore: 96,
       description: 'A crisp Scandinavian workwear-inspired ensemble designed for coffee runs, weekend farmer markets, and open-air cafés.',
-      imageUrl: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=80',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW0MFtKgm0wK74_rVVH-WvGK8xovm3e9x45hrEfQJp9g&s',
       photos: [
         {
-          url: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=80',
+          url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVQwWGvY492RmvB4QlbccyYUXyrEMUujE8S_xRkYH9vQ&s=10',
           label: 'Full Chore Jacket Look',
           caption: 'Ecru heavy canvas jacket paired with straight-leg denim'
         },
         {
-          url: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1000&q=80',
+          url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRttaFgIeXxB-Q3wx4Z398AyQ7Pf2T_MAVvWHtZe66zRQ&s',
           label: 'Selvedge Denim View',
           caption: 'Authentic 13oz ring-spun Japanese selvedge denim'
         },
