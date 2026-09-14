@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState,  useRef } from 'react';
 import {
   Play,
   Pause,
@@ -7,29 +7,23 @@ import {
   VolumeX,
   Maximize2,
   Sparkles,
-  Upload,
+  
   Film,
   ArrowRight,
-  Check,
-  AlertCircle,
-  HelpCircle,
-  RefreshCw,
+
+ 
+ 
   CheckCircle2
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import {
-  saveVideoToIndexedDB,
-  getVideoFromIndexedDB,
-  uploadVideoToServer,
-  checkServerVideoStatus
-} from '../utils/videoStorage';
+
 
 interface VideoShowcaseSectionProps {
   onStartQuiz: () => void;
 }
 
 const DEFAULT_VIDEO_SRC = "/Stylecue_video.mp4";
-const FALLBACK_POSTER = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80';
+
 
 export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onStartQuiz }) => {
   const { themeConfig } = useTheme();
@@ -37,68 +31,19 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(18);
   const [isMuted, setIsMuted] = useState(true);
-  const [customVideoSrc, setCustomVideoSrc] = useState<string | null>(null);
+  
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [hostingStatus, setHostingStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [statusMessage, setStatusMessage] = useState<string>('');
-  const [isServerHosted, setIsServerHosted] = useState<boolean>(false);
-  const [showHostingGuide, setShowHostingGuide] = useState<boolean>(false);
+  
+ 
+  
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Load video on mount: First check server (/Stylecue_video.mp4), then check IndexedDB cache
-  useEffect(() => {
-    let isMounted = true;
-
-    async function initVideo() {
-      try {
-        // 1. Check if server has /Stylecue_video.mp4
-        const serverStatus = await checkServerVideoStatus();
-        if (serverStatus.exists && isMounted) {
-          setCustomVideoSrc(serverStatus.url);
-          setIsServerHosted(true);
-          setHostingStatus('saved');
-          setStatusMessage('Hosted on server (/public/Stylecue_video.mp4)');
-          return;
-        }
-
-        // 2. Check if IndexedDB has a previously uploaded video
-        const cachedBlob = await getVideoFromIndexedDB();
-        if (cachedBlob && isMounted) {
-          const blobUrl = URL.createObjectURL(cachedBlob);
-          setCustomVideoSrc(blobUrl);
-          setHostingStatus('saved');
-          setStatusMessage('Loaded from local cache. Upload to sync with server.');
-
-          // Try background sync to server if server doesn't have it yet
-          uploadVideoToServer(cachedBlob).then((res) => {
-            if (res.success && isMounted) {
-              setIsServerHosted(true);
-              setStatusMessage('Hosted on server (/public/Stylecue_video.mp4)');
-            }
-          });
-          return;
-        }
-
-        // 3. Check direct /Stylecue_video.mp4 load
-        if (isMounted) {
-          setCustomVideoSrc(DEFAULT_VIDEO_SRC);
-        }
-      } catch (err) {
-        console.warn('Video init check error:', err);
-      }
-    }
-
-    initVideo();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  
+  
 
   // Sync custom video player state
   const handleTimeUpdate = () => {
@@ -111,7 +56,7 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
   };
 
   const togglePlay = () => {
-    if (videoRef.current && customVideoSrc) {
+    if (videoRef.current ) {
       if (videoRef.current.paused) {
         videoRef.current.play().catch(() => {});
         setIsPlaying(true);
@@ -119,82 +64,28 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
         videoRef.current.pause();
         setIsPlaying(false);
       }
-    } else {
-      setIsPlaying(!isPlaying);
     }
+    
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
     setCurrentTime(time);
-    if (videoRef.current && customVideoSrc) {
+    if (videoRef.current ) {
       videoRef.current.currentTime = time;
     }
   };
 
   // Core handler for saving and hosting the video file
-  const processVideoFile = async (file: File) => {
-    if (!file) return;
+  
 
-    try {
-      setIsUploading(true);
-      setHostingStatus('saving');
-      setStatusMessage('Embedding and saving video to /public/Stylecue_video.mp4...');
+  
 
-      // 1. Immediately create local URL for instant smooth playback
-      const localUrl = URL.createObjectURL(file);
-      setCustomVideoSrc(localUrl);
-      setIsPlaying(true);
-      setCurrentTime(0);
+  
 
-      // 2. Persist to IndexedDB so browser always remembers across reloads
-      await saveVideoToIndexedDB(file);
+  
 
-      // 3. Upload directly to the server so it writes to /public/Stylecue_video.mp4
-      const uploadRes = await uploadVideoToServer(file);
-
-      if (uploadRes.success) {
-        setIsServerHosted(true);
-        setHostingStatus('saved');
-        setStatusMessage('Video saved to /public/Stylecue_video.mp4. Ready for hosting!');
-      } else {
-        setHostingStatus('saved');
-        setStatusMessage('Video saved locally in browser. Note: Place in /public for all visitors.');
-      }
-    } catch (err: any) {
-      console.error('Error processing video:', err);
-      setHostingStatus('error');
-      setStatusMessage(err?.message || 'Failed to save video');
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processVideoFile(file);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('video/')) {
-      processVideoFile(file);
-    }
-  };
+ 
 
   const handleFullscreenToggle = () => {
     if (!containerRef.current) return;
@@ -236,31 +127,18 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
       <div className="max-w-5xl mx-auto space-y-6">
         <div
           ref={containerRef}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`relative rounded-3xl overflow-hidden glass-panel-elevated border shadow-2xl aspect-video group bg-black flex flex-col justify-between transition-all duration-300 ${
-            isDragOver ? 'border-2 ring-4 ring-purple-500/50 scale-[1.01]' : 'border-white/15'
-          }`}
-          style={{
-            borderColor: isDragOver ? themeConfig.primaryAccent : undefined,
-          }}
+          
+         
+          className="relative rounded-3xl overflow-hidden glass-panel-elevated border shadow-2xl aspect-video group bg-black flex flex-col justify-between transition-all duration-300 border-white/15"
+          
         >
           {/* Drag & Drop Overlay Indicator */}
-          {isDragOver && (
-            <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center pointer-events-none p-6 text-center">
-              <Upload className="w-16 h-16 animate-bounce mb-3" style={{ color: themeConfig.primaryAccent }} />
-              <h4 className="text-xl font-bold text-white mb-1">Drop your StyleCue Video Here</h4>
-              <p className="text-xs text-white/80 max-w-sm">
-                We will embed the video and save it to /public/Stylecue_video.mp4 for permanent hosting.
-              </p>
-            </div>
-          )}
+          
 
           {/* Native Video Element if uploaded or default source */}
          <video
   ref={videoRef }
-  src={customVideoSrc || DEFAULT_VIDEO_SRC}
+  src={ DEFAULT_VIDEO_SRC}
   className="w-full h-full object-cover"
   onLoadedMetadata={handleTimeUpdate}
   onTimeUpdate={handleTimeUpdate}
@@ -336,26 +214,7 @@ export const VideoShowcaseSection: React.FC<VideoShowcaseSectionProps> = ({ onSt
 
               <div className="flex items-center gap-2">
                 {/* Upload video button */}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileUpload}
-                  accept="video/mp4,video/webm,video/ogg,video/quicktime"
-                  className="hidden"
-                />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading}
-                  className="px-3 py-1.5 rounded-xl glass-panel border border-white/15 text-[11px] hover:bg-white/15 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                  title="Upload video file to host permanently in /public/Stylecue_video.mp4"
-                >
-                  {isUploading ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
-                  ) : (
-                    <Upload className="w-3.5 h-3.5" />
-                  )}
-                  <span>{isUploading ? 'Saving...' : customVideoSrc ? 'Replace Video' : 'Add Video File (.mp4)'}</span>
-                </button>
+                
 
                 <button
                   onClick={handleFullscreenToggle}
